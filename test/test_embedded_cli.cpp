@@ -33,6 +33,7 @@ TEST(EmbeddedCliTest, CommandParsing) {
 
 int parsed_int_arg = 0;
 char parsed_string_arg[128] = {0};
+float parsed_float_arg = 0.0f;
 
 void arg_test_command_handler() {
     // This handler isn't strictly needed for this test, but it's good practice
@@ -155,4 +156,32 @@ TEST(EmbeddedCliTest, CommandNameTruncation) {
     // This command name should be found.
     embedded_cli_process("short");
     ASSERT_TRUE(test_command_executed);
+}
+
+TEST(EmbeddedCliTest, FloatArgumentParsing) {
+    embedded_cli_init(128);
+
+    cli_arg_t args[] = {
+        {
+            .name = "--float_arg",
+            .type = CLI_ARG_TYPE_FLOAT,
+            .value = &parsed_float_arg
+        }
+    };
+
+    cli_command_t test_command = {
+        .name = "float_test",
+        .handler = arg_test_command_handler,
+        .args = args,
+        .arg_count = 1
+    };
+
+    cli_command_t commands[] = { test_command };
+    embedded_cli_register_commands(commands, 1);
+
+    parsed_float_arg = 0.0f;
+
+    embedded_cli_process("float_test --float_arg 3.14");
+
+    ASSERT_FLOAT_EQ(parsed_float_arg, 3.14f);
 }

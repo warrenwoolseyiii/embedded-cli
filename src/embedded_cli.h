@@ -10,6 +10,7 @@
 typedef enum {
     CLI_ARG_TYPE_INT,
     CLI_ARG_TYPE_STRING,
+    CLI_ARG_TYPE_FLOAT,
 } cli_arg_type_t;
 
 /**

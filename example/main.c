@@ -5,12 +5,14 @@
 
 int int_value = 0;
 char string_value[128] = {0};
+float float_value = 0.0f;
 bool should_quit = false;
 
 void print_args_handler() {
     printf("Received arguments:\n");
     printf("  --int_arg: %d\n", int_value);
     printf("  --string_arg: %s\n", string_value);
+    printf("  --float_arg: %f\n", float_value);
 }
 
 void quit_handler() {
@@ -31,6 +33,11 @@ int main() {
             .name = "--string_arg",
             .type = CLI_ARG_TYPE_STRING,
             .value = string_value
+        },
+        {
+            .name = "--float_arg",
+            .type = CLI_ARG_TYPE_FLOAT,
+            .value = &float_value
         }
     };
 
@@ -39,7 +46,7 @@ int main() {
             .name = "print_args",
             .handler = print_args_handler,
             .args = print_args,
-            .arg_count = 2
+            .arg_count = 3
         },
         {
             .name = "quit",

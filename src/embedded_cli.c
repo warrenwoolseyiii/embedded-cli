@@ -13,8 +13,15 @@ static void print_help() {
     for (uint8_t i = 0; i < registered_command_count; i++) {
         printf("  %s", registered_commands[i].name);
         for (uint8_t j = 0; j < registered_commands[i].arg_count; j++) {
-            const char* arg_type = (registered_commands[i].args[j].type == CLI_ARG_TYPE_INT) ? "<int>" : "<string>";
-            printf(" %s %s", registered_commands[i].args[j].name, arg_type);
+            const char* arg_type_str = "unknown";
+            if (registered_commands[i].args[j].type == CLI_ARG_TYPE_INT) {
+                arg_type_str = "<int>";
+            } else if (registered_commands[i].args[j].type == CLI_ARG_TYPE_STRING) {
+                arg_type_str = "<string>";
+            } else if (registered_commands[i].args[j].type == CLI_ARG_TYPE_FLOAT) {
+                arg_type_str = "<float>";
+            }
+            printf(" %s %s", registered_commands[i].args[j].name, arg_type_str);
         }
         printf("\n");
     }
@@ -105,6 +112,18 @@ void embedded_cli_process(const char* command_string) {
                         }
                         ((char*)arg->value)[buffer_idx] = '\0';
                         if (*p == '"') p++; // Skip closing quote
+                    }
+                } else if (arg->type == CLI_ARG_TYPE_FLOAT) {
+                    buffer_idx = 0;
+                    while (*p != ' ' && *p != '\0') {
+                        if (buffer_idx < max_arg_length - 1) {
+                            temp_buffer[buffer_idx++] = *p;
+                        }
+                        p++;
+                    }
+                    temp_buffer[buffer_idx] = '\0';
+                    if (arg->value) {
+                        *(float*)arg->value = atof(temp_buffer);
                     }
                 }
                 break;

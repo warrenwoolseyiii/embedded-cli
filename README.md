@@ -6,7 +6,7 @@ A lightweight, configurable command-line interface (CLI) library for embedded sy
 
 *   Minimal resource footprint, suitable for microcontrollers.
 *   Configurable command and argument handling.
-*   Tagged argument parsing for both integer and string types.
+*   Tagged argument parsing for integer, string, and float types.
 *   Built-in help command (`help`) that automatically lists all registered commands.
 *   Test-driven development with Google Test.
 *   CMake build system for easy compilation.
@@ -48,7 +48,7 @@ The main header file contains the public API for the library.
 
 #### Data Structures
 
-*   `cli_arg_type_t`: Enum for argument types (`CLI_ARG_TYPE_INT`, `CLI_ARG_TYPE_STRING`).
+*   `cli_arg_type_t`: Enum for argument types (`CLI_ARG_TYPE_INT`, `CLI_ARG_TYPE_STRING`, `CLI_ARG_TYPE_FLOAT`).
 *   `cli_arg_t`: Structure representing a command argument.
 *   `cli_command_t`: Structure representing a CLI command.
 
@@ -68,12 +68,14 @@ The main header file contains the public API for the library.
 
 int int_value = 0;
 char string_value[128] = {0};
+float float_value = 0.0f;
 bool should_quit = false;
 
 void print_args_handler() {
     printf("Received arguments:\n");
     printf("  --int_arg: %d\n", int_value);
     printf("  --string_arg: %s\n", string_value);
+    printf("  --float_arg: %f\n", float_value);
 }
 
 void quit_handler() {
@@ -86,11 +88,12 @@ int main() {
 
     cli_arg_t print_args[] = {
         { "--int_arg", CLI_ARG_TYPE_INT, &int_value },
-        { "--string_arg", CLI_ARG_TYPE_STRING, string_value }
+        { "--string_arg", CLI_ARG_TYPE_STRING, string_value },
+        { "--float_arg", CLI_ARG_TYPE_FLOAT, &float_value }
     };
 
     cli_command_t commands[] = {
-        { "print_args", print_args_handler, print_args, 2 },
+        { "print_args", print_args_handler, print_args, 3 },
         { "quit", quit_handler, NULL, 0 }
     };
     embedded_cli_register_commands(commands, 2);
