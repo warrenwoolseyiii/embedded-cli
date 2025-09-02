@@ -70,6 +70,7 @@ void embedded_cli_process(const char* command_string) {
     }
 
     // Parse arguments
+    uint8_t parsed_arg_count = 0;
     while (*p != '\0') {
         while (*p == ' ') p++; // Skip whitespace
         if (*p == '\0') break;
@@ -85,6 +86,7 @@ void embedded_cli_process(const char* command_string) {
 
         for (uint8_t i = 0; i < command->arg_count; i++) {
             if (strcmp(temp_buffer, command->args[i].name) == 0) {
+                parsed_arg_count++;
                 const cli_arg_t* arg = &command->args[i];
                 while (*p == ' ') p++; // Skip whitespace
 
@@ -129,6 +131,12 @@ void embedded_cli_process(const char* command_string) {
                 break;
             }
         }
+    }
+
+    if (parsed_arg_count != command->arg_count) {
+        printf("Error: Incomplete arguments for command '%s'\n", command->name);
+        print_help();
+        return;
     }
 
     if (command->handler) {

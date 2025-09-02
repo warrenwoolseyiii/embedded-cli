@@ -8,6 +8,7 @@ A lightweight, configurable command-line interface (CLI) library for embedded sy
 *   Configurable command and argument handling.
 *   Tagged argument parsing for integer, string, and float types.
 *   Built-in help command (`help`) that automatically lists all registered commands.
+*   Error handling for incomplete argument lists.
 *   Test-driven development with Google Test.
 *   CMake build system for easy compilation.
 
@@ -56,7 +57,7 @@ The main header file contains the public API for the library.
 
 *   `void embedded_cli_init(uint16_t max_arg_length)`: Initializes the CLI library.
 *   `void embedded_cli_register_commands(const cli_command_t* commands, uint8_t command_count)`: Registers an array of commands with the CLI and prints a list of available commands.
-*   `void embedded_cli_process(const char* command_string)`: Processes an incoming command string. Handles the built-in `help` command.
+*   `void embedded_cli_process(const char* command_string)`: Processes an incoming command string. Handles the built-in `help` command and errors for incomplete arguments.
 
 ### Example
 

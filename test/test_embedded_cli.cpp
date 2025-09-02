@@ -185,3 +185,37 @@ TEST(EmbeddedCliTest, FloatArgumentParsing) {
 
     ASSERT_FLOAT_EQ(parsed_float_arg, 3.14f);
 }
+
+TEST(EmbeddedCliTest, IncompleteArguments) {
+    embedded_cli_init(128);
+
+    cli_arg_t args[] = {
+        {
+            .name = "--int_arg",
+            .type = CLI_ARG_TYPE_INT,
+            .value = &parsed_int_arg
+        },
+        {
+            .name = "--string_arg",
+            .type = CLI_ARG_TYPE_STRING,
+            .value = parsed_string_arg
+        }
+    };
+
+    cli_command_t test_command = {
+        .name = "incomplete_test",
+        .handler = arg_test_command_handler,
+        .args = args,
+        .arg_count = 2
+    };
+
+    cli_command_t commands[] = { test_command };
+    embedded_cli_register_commands(commands, 1);
+
+    testing::internal::CaptureStdout();
+    embedded_cli_process("incomplete_test --int_arg 42");
+    std::string output = testing::internal::GetCapturedStdout();
+
+    ASSERT_NE(output.find("Error: Incomplete arguments"), std::string::npos);
+    ASSERT_NE(output.find("Available commands:"), std::string::npos);
+}
