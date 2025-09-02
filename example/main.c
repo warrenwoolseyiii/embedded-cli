@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "embedded_cli.h"
 
 int int_value = 0;
 char string_value[128] = {0};
+bool should_quit = false;
 
 void print_args_handler() {
     printf("Received arguments:\n");
@@ -11,10 +13,15 @@ void print_args_handler() {
     printf("  --string_arg: %s\n", string_value);
 }
 
+void quit_handler() {
+    printf("Exiting.\n");
+    should_quit = true;
+}
+
 int main() {
     embedded_cli_init(128);
 
-    cli_arg_t args[] = {
+    cli_arg_t print_args[] = {
         {
             .name = "--int_arg",
             .type = CLI_ARG_TYPE_INT,
@@ -27,19 +34,39 @@ int main() {
         }
     };
 
-    cli_command_t print_command = {
-        .name = "print_args",
-        .handler = print_args_handler,
-        .args = args,
-        .arg_count = 2
+    cli_command_t commands[] = {
+        {
+            .name = "print_args",
+            .handler = print_args_handler,
+            .args = print_args,
+            .arg_count = 2
+        },
+        {
+            .name = "quit",
+            .handler = quit_handler,
+            .args = NULL,
+            .arg_count = 0
+        }
     };
+    embedded_cli_register_commands(commands, 2);
 
-    cli_command_t commands[] = { print_command };
-    embedded_cli_register_commands(commands, 1);
+    char input_buffer[256];
 
-    const char* command_string = "print_args --int_arg 123 --string_arg \"hello from example\"";
-    printf("Processing command: %s\n", command_string);
-    embedded_cli_process(command_string);
+    while (!should_quit) {
+        printf("> ");
+        fflush(stdout);
+
+        if (fgets(input_buffer, sizeof(input_buffer), stdin) == NULL) {
+            break;
+        }
+
+        // Remove trailing newline
+        input_buffer[strcspn(input_buffer, "\r\n")] = 0;
+
+        if (strlen(input_buffer) > 0) {
+            embedded_cli_process(input_buffer);
+        }
+    }
 
     return 0;
 }

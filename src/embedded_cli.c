@@ -2,10 +2,24 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 static uint16_t max_arg_length = 0;
 static const cli_command_t* registered_commands = NULL;
 static uint8_t registered_command_count = 0;
+
+static void print_help() {
+    printf("Available commands:\n");
+    for (uint8_t i = 0; i < registered_command_count; i++) {
+        printf("  %s", registered_commands[i].name);
+        for (uint8_t j = 0; j < registered_commands[i].arg_count; j++) {
+            const char* arg_type = (registered_commands[i].args[j].type == CLI_ARG_TYPE_INT) ? "<int>" : "<string>";
+            printf(" %s %s", registered_commands[i].args[j].name, arg_type);
+        }
+        printf("\n");
+    }
+    printf("  help\n");
+}
 
 void embedded_cli_init(uint16_t new_max_arg_length) {
     max_arg_length = new_max_arg_length;
@@ -14,9 +28,15 @@ void embedded_cli_init(uint16_t new_max_arg_length) {
 void embedded_cli_register_commands(const cli_command_t* commands, uint8_t command_count) {
     registered_commands = commands;
     registered_command_count = command_count;
+    print_help();
 }
 
 void embedded_cli_process(const char* command_string) {
+    if (strcmp(command_string, "help") == 0) {
+        print_help();
+        return;
+    }
+
     char temp_buffer[max_arg_length];
     const char* p = command_string;
     int buffer_idx = 0;
