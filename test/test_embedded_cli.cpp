@@ -219,3 +219,12 @@ TEST(EmbeddedCliTest, IncompleteArguments) {
     ASSERT_NE(output.find("Error: Incomplete arguments"), std::string::npos);
     ASSERT_NE(output.find("Available commands:"), std::string::npos);
 }
+
+TEST(EmbeddedCliTest, NullArguments) {
+    // Test that the functions don't crash with NULL inputs
+    embedded_cli_register_commands(NULL, 0);
+    embedded_cli_process(NULL);
+
+    // No assertions are needed here, the test passes if it doesn't crash.
+    // This is a basic "smoke test" for null pointer handling.
+}

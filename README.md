@@ -9,6 +9,7 @@ A lightweight, configurable command-line interface (CLI) library for embedded sy
 *   Tagged argument parsing for integer, string, and float types.
 *   Built-in help command (`help`) that automatically lists all registered commands.
 *   Error handling for incomplete argument lists.
+*   Robust `NULL` argument handling in public API functions.
 *   Test-driven development with Google Test.
 *   CMake build system for easy compilation.
 

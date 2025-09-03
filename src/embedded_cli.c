@@ -33,12 +33,19 @@ void embedded_cli_init(uint16_t new_max_arg_length) {
 }
 
 void embedded_cli_register_commands(const cli_command_t* commands, uint8_t command_count) {
+    if (commands == NULL) {
+        return;
+    }
     registered_commands = commands;
     registered_command_count = command_count;
     print_help();
 }
 
 void embedded_cli_process(const char* command_string) {
+    if (command_string == NULL) {
+        return;
+    }
+
     if (strcmp(command_string, "help") == 0) {
         print_help();
         return;
