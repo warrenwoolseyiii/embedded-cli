@@ -1,0 +1,26 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -S ${{github.workspace}}
+
+    - name: Build
+      # This command builds the library, tests, and the example application.
+      run: cmake --build ${{github.workspace}}/build
+
+    - name: Test
+      # This command runs the unit tests.
+      working-directory: ${{github.workspace}}/build
+      run: ctest --output-on-failure
