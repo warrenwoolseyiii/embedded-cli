@@ -42,8 +42,9 @@ typedef struct {
  * @brief Initializes the embedded CLI.
  *
  * @param max_arg_length The maximum length for a single argument string.
+ * @param user_print_function A function pointer for user-defined print function.
  */
-void embedded_cli_init(uint16_t max_arg_length);
+void embedded_cli_init(uint16_t max_arg_length, int (*user_print_function)(const char *format, ...));
 
 /**
  * @brief Registers the commands with the CLI.

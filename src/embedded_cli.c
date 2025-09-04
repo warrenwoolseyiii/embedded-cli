@@ -2,11 +2,11 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 static uint16_t max_arg_length = 0;
 static const cli_command_t* registered_commands = NULL;
 static uint8_t registered_command_count = 0;
+static int (*printf)(const char *format, ...) = NULL;
 
 static void print_help() {
     printf("Available commands:\n");
@@ -28,8 +28,9 @@ static void print_help() {
     printf("  help\n");
 }
 
-void embedded_cli_init(uint16_t new_max_arg_length) {
+void embedded_cli_init(uint16_t new_max_arg_length, int (*user_print_function)(const char *format, ...)) {
     max_arg_length = new_max_arg_length;
+    printf = user_print_function;
 }
 
 void embedded_cli_register_commands(const cli_command_t* commands, uint8_t command_count) {

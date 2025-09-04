@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "embedded_cli.h"
 
 int int_value = 0;
@@ -21,7 +22,7 @@ void quit_handler() {
 }
 
 int main() {
-    embedded_cli_init(128);
+    embedded_cli_init(128, printf);
 
     cli_arg_t print_args[] = {
         {

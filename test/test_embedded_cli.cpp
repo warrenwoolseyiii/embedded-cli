@@ -2,10 +2,11 @@
 
 extern "C" {
 #include "embedded_cli.h"
+#include <stdio.h>
 }
 
 TEST(EmbeddedCliTest, Init) {
-    embedded_cli_init(128);
+    embedded_cli_init(128, printf);
 }
 
 bool test_command_executed = false;
@@ -14,7 +15,7 @@ void test_command_handler() {
 }
 
 TEST(EmbeddedCliTest, CommandParsing) {
-    embedded_cli_init(128);
+    embedded_cli_init(128, printf);
 
     cli_command_t test_command = {
         .name = "test_command",
@@ -40,7 +41,7 @@ void arg_test_command_handler() {
 }
 
 TEST(EmbeddedCliTest, ArgumentParsing) {
-    embedded_cli_init(128);
+    embedded_cli_init(128, printf);
 
     cli_arg_t args[] = {
         {
@@ -75,7 +76,7 @@ TEST(EmbeddedCliTest, ArgumentParsing) {
 }
 
 TEST(EmbeddedCliTest, HelpCommand) {
-    embedded_cli_init(128);
+    embedded_cli_init(128, printf);
 
     cli_command_t test_command = {
         .name = "test_command",
@@ -99,7 +100,7 @@ TEST(EmbeddedCliTest, HelpCommand) {
 
 TEST(EmbeddedCliTest, ArgumentTruncation) {
     const int max_len = 16; // Buffer size of 16 can hold 15 chars + null
-    embedded_cli_init(max_len);
+    embedded_cli_init(max_len, printf);
 
     char truncated_string_arg[max_len] = {0};
 
@@ -134,7 +135,7 @@ TEST(EmbeddedCliTest, ArgumentTruncation) {
 
 TEST(EmbeddedCliTest, CommandNameTruncation) {
     const int max_len = 8;
-    embedded_cli_init(max_len);
+    embedded_cli_init(max_len, printf);
 
     cli_command_t test_command = {
         .name = "short",
@@ -159,7 +160,7 @@ TEST(EmbeddedCliTest, CommandNameTruncation) {
 }
 
 TEST(EmbeddedCliTest, FloatArgumentParsing) {
-    embedded_cli_init(128);
+    embedded_cli_init(128, printf);
 
     cli_arg_t args[] = {
         {
@@ -187,7 +188,7 @@ TEST(EmbeddedCliTest, FloatArgumentParsing) {
 }
 
 TEST(EmbeddedCliTest, IncompleteArguments) {
-    embedded_cli_init(128);
+    embedded_cli_init(128, printf);
 
     cli_arg_t args[] = {
         {
